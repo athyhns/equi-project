@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # 1. Backend (Python FastAPI)
+  server:
+    build: ./server
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./server:/app      # Biar kalau edit Python, langsung berubah
+    depends_on:
+      - mongo
+
+  # 2. Frontend (React + Vite)
+  client:
+    build: ./client
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/app       # <--- KUNCI: Biar kodingan Windows "ngaca" ke Docker
+      - /app/node_modules   # <--- PENGAMAN: Biar folder sistem Linux gak rusak sama Windows
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Biar Docker sadar kalau file Windows berubah
+    depends_on:
+      - server
+
+  # 3. Database (MongoDB)
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
