@@ -4,7 +4,7 @@ import { Doughnut } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-// --- SMART LOGO ---
+
 const SubscriptionLogo = ({ name }) => {
     const [imgError, setImgError] = useState(false);
     const domain = name?.toLowerCase().replace(/\s+/g, '') + '.com';
@@ -137,12 +137,12 @@ export default function App() {
   const [toast, setToast] = useState(null);
   const [newSub, setNewSub] = useState({name:'', price:'', date:'', type:'Personal'});
   
-  // State Kalkulator Split
+  
   const [splitTitle, setSplitTitle] = useState('');
   const [splitTotal, setSplitTotal] = useState('');
   const [splitNames, setSplitNames] = useState('');
   const [linkedSubId, setLinkedSubId] = useState(null); 
-  const [editingSplitId, setEditingSplitId] = useState(null); // <--- INI YG KEMBALI
+  const [editingSplitId, setEditingSplitId] = useState(null); 
 
   useEffect(() => { if(user) { fetchData(); fetchSplits(); fetchAnalytics(); } }, [user]);
 
@@ -186,7 +186,6 @@ export default function App() {
       fetchData(); showToast("Marked as Paid!");
   }
 
-  // --- LOGIKA SAVE / EDIT SPLIT ---
   const handleSaveSplit = async () => {
     if(!splitTotal || !splitNames) return showToast("Isi harga & nama teman!", "error");
     const names = splitNames.split(',').map(n => n.trim()).filter(n => n);
@@ -208,14 +207,13 @@ export default function App() {
     };
 
     if (editingSplitId) {
-        // UPDATE MODE
+        
         await fetch(`http://localhost:8000/api/splits/${editingSplitId}`, {
             method: 'PUT', headers: {'Content-Type':'application/json'},
             body: JSON.stringify(payload)
         });
         showToast("Split updated!");
     } else {
-        // CREATE MODE
         await fetch('http://localhost:8000/api/splits', {
             method:'POST', headers:{'Content-Type':'application/json'},
             body: JSON.stringify(payload)
@@ -228,7 +226,7 @@ export default function App() {
     setLinkedSubId(null); setEditingSplitId(null);
   }
 
-  // FUNGSI LOAD DATA KE FORM EDIT
+
   const handleEditSplit = (split) => {
       setEditingSplitId(split.id);
       setSplitTitle(split.title);

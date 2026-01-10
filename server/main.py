@@ -24,16 +24,15 @@ coll_subs = db.subscriptions
 coll_users = db.users
 coll_splits = db.splits
 
-# --- MODEL DATA ---
 class Subscription(BaseModel):
     name: str
     price: int
-    date: str # Format: "YYYY-MM-DD" (Tanggal mulai)
+    date: str 
     type: str
-    owner_email: str # KUNCI PRIVASI: Punya siapa data ini?
+    owner_email: str 
     cost_for_me: Optional[int] = 0 
     shared_with: Optional[List[str]] = []
-    paid_months: Optional[List[str]] = [] # List bulan yg lunas ["2023-12", "2024-01"]
+    paid_months: Optional[List[str]] = [] 
 
 class User(BaseModel):
     email: str
@@ -50,7 +49,7 @@ class SplitTransaction(BaseModel):
     total_amount: int
     members: List[SplitMember]
     date: str
-    owner_email: str # KUNCI PRIVASI
+    owner_email: str 
     linked_sub_id: Optional[str] = None 
 
 class SplitRequest(BaseModel):
@@ -61,7 +60,6 @@ class SplitRequest(BaseModel):
 def read_root():
     return {"message": "Equi Backend Ready! 🔥"}
 
-# --- AUTH ---
 @app.post("/api/register")
 async def register(user: User):
     existing = await coll_users.find_one({"email": user.email})
@@ -75,11 +73,11 @@ async def login(user: User):
     if not check: raise HTTPException(status_code=401, detail="Invalid credentials")
     return {"status": "Success", "name": check["name"], "email": check["email"]}
 
-# --- SUBSCRIPTION (DENGAN FILTER EMAIL) ---
+
 @app.get("/api/subs")
-async def get_subscriptions(email: str): # Wajib kirim email
+async def get_subscriptions(email: str): 
     subs = []
-    # Cuma ambil data milik email tersebut
+    
     async for sub in coll_subs.find({"owner_email": email}):
         sub["id"] = str(sub["_id"])
         del sub["_id"]
@@ -104,21 +102,20 @@ async def delete_subscription(sub_id: str):
     await coll_subs.delete_one({"_id": ObjectId(sub_id)})
     return {"status": "Deleted"}
 
-# FITUR BARU: BAYAR BULANAN (CHECKLIST)
 @app.put("/api/subs/{sub_id}/pay")
 async def pay_subscription_month(sub_id: str, month: str = Query(..., description="Format YYYY-MM")):
-    # Tambahkan bulan ke list paid_months
+
     await coll_subs.update_one(
         {"_id": ObjectId(sub_id)},
-        {"$addToSet": {"paid_months": month}} # addToSet biar gak duplikat
+        {"$addToSet": {"paid_months": month}} 
     )
     return {"status": "Paid"}
 
-# --- ANALYTICS (PER USER) ---
+
 @app.get("/api/analytics")
 async def get_analytics(email: str):
     pipeline = [
-        {"$match": {"owner_email": email}}, # Filter dulu punya siapa
+        {"$match": {"owner_email": email}}, 
         {
             "$group": {
                 "_id": "$type",
@@ -132,7 +129,7 @@ async def get_analytics(email: str):
     if not data: return [{"type": "No Data", "total": 1}]
     return data
 
-# --- SPLIT BILL (PER USER) ---
+
 @app.get("/api/splits")
 async def get_splits(email: str):
     splits = []
@@ -179,7 +176,7 @@ async def delete_split(split_id: str):
     if split and split.get("linked_sub_id"):
         sub = await coll_subs.find_one({"_id": ObjectId(split["linked_sub_id"])})
         if sub:
-            # RESET HARGA KE NORMAL
+  
             await coll_subs.update_one(
                 {"_id": ObjectId(split["linked_sub_id"])},
                 {"$set": {"cost_for_me": sub["price"], "shared_with": []}}

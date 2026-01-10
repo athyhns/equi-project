@@ -7,18 +7,18 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Poppins', 'sans-serif'], // Set Poppins jadi default
+        sans: ['Poppins', 'sans-serif'], 
       },
       colors: {
         equi: {
-          light: '#FFF5F7',  // Background pink tipis banget
-          main: '#FF5E89',   // Pink cerah modern
-          dark: '#2D3748',   // Teks gelap (bukan hitam pekat)
-          accent: '#7F5AD5', // Ungu buat gradasi
+          light: '#FFF5F7', 
+          main: '#FF5E89',  
+          dark: '#2D3748',   
+          accent: '#7F5AD5', 
         }
       },
       boxShadow: {
-        'soft': '0 4px 20px -2px rgba(255, 94, 137, 0.2)', // Bayangan pink halus
+        'soft': '0 4px 20px -2px rgba(255, 94, 137, 0.2)', 
       }
     },
   },

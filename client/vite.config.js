@@ -7,8 +7,8 @@ export default defineConfig({
     watch: {
       usePolling: true,
     },
-    host: true,       // <--- INI WAJIB ADA biar bisa dibuka di Windows
+    host: true,       
     strictPort: true,
-    port: 5173,       // Kita kunci di port 5173
+    port: 5173,       
   }
 })

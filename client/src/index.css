@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Tambahan dikit biar scrollbar-nya cantik */
+
 ::-webkit-scrollbar {
   width: 8px;
 }
