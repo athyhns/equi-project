@@ -1,118 +1,52 @@
-========================================================================
-PROYEK TUGAS BESAR: INTEGRASI APLIKASI ENTERPRISE
-NAMA PROYEK       : EQUI - SUBSCRIPTION MANAGEMENT SYSTEM
-MAHASISWA         : Athiyah Naurah Syifa
-========================================================================
+# 💸 EQUI - Subscription Management System
 
-1. DESKRIPSI PROYEK
--------------------
-Equi adalah aplikasi berbasis web yang dirancang untuk membantu pengguna mengelola
-langganan bulanan (seperti Netflix, Spotify, iCloud) dan memantau pengeluaran rutin. 
+![React](https://img.shields.io/badge/Frontend-React_JS-blue?logo=react)
+![FastAPI](https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi&logoColor=white)
+![MongoDB](https://img.shields.io/badge/Database-MongoDB-47A248?logo=mongodb&logoColor=white)
+![Docker](https://img.shields.io/badge/Infrastructure-Docker-2496ED?logo=docker&logoColor=white)
 
-Sistem ini dibangun dengan pendekatan arsitektur "Microservices" yang ter-containerized,
-di mana setiap komponen (Frontend, Backend, dan Database) berjalan pada lingkungan 
-terisolasi namun saling terintegrasi melalui jaringan internal Docker.
+**TUGAS BESAR: INTEGRASI APLIKASI ENTERPRISE**
+* **Nama Proyek:** Equi - Subscription Management System
+* **Mahasiswa:** Athiyah Naurah Syifa
 
-2. ARSITEKTUR TEKNOLOGI (TECH STACK)
--------------------
-Aplikasi ini terdiri dari tiga layanan utama (services):
+---
 
-A. SERVICE 1: FRONTEND (Client)
-   - Framework  : React JS (menggunakan Vite sebagai build tool).
-   - Styling    : Tailwind CSS (untuk UI yang responsif dan modern).
-   - Fungsi     : Menyediakan antarmuka interaktif bagi pengguna, menangani 
-                  state management, dan mengirimkan HTTP Request ke Backend.
-   - Port       : 5173
+## 📖 Deskripsi Proyek
 
-B. SERVICE 2: BACKEND (Server)
-   - Bahasa     : Python 3.9.
-   - Framework  : FastAPI.
-   - Validasi   : Pydantic (menjamin integritas skema data yang masuk).
-   - Driver DB  : Motor (Asynchronous MongoDB driver).
-   - Fungsi     : Bertindak sebagai API Gateway, menangani logika bisnis 
-                  (seperti perhitungan Split Bill), dan komunikasi ke Database.
-   - Port       : 8000
+**Equi** adalah aplikasi berbasis web yang dirancang untuk membantu pengguna mengelola langganan bulanan (seperti Netflix, Spotify, iCloud) dan memantau pengeluaran rutin secara efisien.
 
-C. SERVICE 3: DATABASE
-   - Engine     : MongoDB (NoSQL).
-   - Image      : mongo:latest.
-   - Fungsi     : Penyimpanan data persisten (Persistent Storage) untuk user, 
-                  transaksi langganan, dan riwayat pembagian tagihan.
-   - Port       : 27017
+Sistem ini dibangun dengan pendekatan arsitektur **Microservices** yang *ter-containerized*. Setiap komponen (Frontend, Backend, dan Database) berjalan pada lingkungan terisolasi namun saling terintegrasi melalui jaringan internal Docker.
 
-D. ORKESTRASI & INFRASTRUKTUR
-   - Docker     : Membungkus setiap service dalam container.
-   - Compose    : Mengelola multi-container application, network bridge, 
-                  dan volume mapping.
+---
 
-3. ALUR INTEGRASI DATA (DATA FLOW)
--------------------
-1. User Input: 
-   Pengguna menginput data langganan di React (Frontend).
-   
-2. API Request: 
-   React mengirim data dalam format JSON melalui HTTP POST ke endpoint 
-   Backend (http://server:8000/api/subs).
-   
-3. Validasi & Logika: 
-   FastAPI menerima request, memvalidasi tipe data menggunakan Pydantic Models. 
-   Jika valid, data diproses (misal: penambahan timestamp).
-   
-4. Persistence: 
-   Backend menyimpan dokumen ke koleksi MongoDB secara asynchronous.
-   
-5. Feedback Loop: 
-   Backend mengirim respons sukses (200 OK) ke Frontend, dan UI diperbarui 
-   secara real-time tanpa reload halaman (Single Page Application behavior).
+## 🛠️ Arsitektur & Tech Stack
 
-4. FITUR UTAMA & KOMPLEKSITAS
--------------------
-1. Manajemen Langganan (CRUD):
-   Create, Read, Update, dan Delete data langganan dengan update real-time.
+Aplikasi ini terdiri dari tiga layanan utama yang diorkestrasi menggunakan **Docker Compose**:
 
-2. Split Bill Calculator (Logika Bisnis):
-   Fitur kompleks untuk menghitung pembagian biaya langganan bersama teman. 
-   Backend secara otomatis menghitung "Cost for Me" (biaya pribadi) dan 
-   memisahkan tagihan orang lain, serta menyimpannya sebagai riwayat transaksi.
+| Service | Teknologi | Port | Fungsi Utama |
+| :--- | :--- | :--- | :--- |
+| **Frontend** | React JS (Vite) + Tailwind CSS | `5173` | UI Interaktif, State Management, HTTP Requests. |
+| **Backend** | Python (FastAPI) + Motor | `8000` | API Gateway, Validasi Pydantic, Logika Split Bill. |
+| **Database** | MongoDB (NoSQL) | `27017` | Penyimpanan Data Persisten (User, Transaksi). |
 
-3. Sistem Otentikasi (Security):
-   Implementasi Login dan Register untuk membatasi akses data spesifik per user.
+---
 
-4. Visualisasi Kalender:
-   Pemetaan tanggal tagihan ke dalam tampilan kalender interaktif.
+## 🔄 Alur Integrasi Data (Data Flow)
 
-5. External API Integration:
-   Frontend terintegrasi dengan API "Clearbit" untuk mengambil logo layanan 
-   (misal: logo Netflix/Spotify) secara otomatis berdasarkan nama inputan.
+Berikut adalah visualisasi alur data ketika pengguna menambahkan langganan baru:
 
-5. STRUKTUR DIREKTORI
--------------------
-/equi-project
-├── /client             # Source code Frontend (React)
-│   ├── /src
-│   ├── Dockerfile      # Konfigurasi container Frontend (Node.js Alpine)
-│   └── vite.config.js
-├── /server             # Source code Backend (Python FastAPI)
-│   ├── main.py         # Entry point aplikasi & definisi API Routes
-│   ├── requirements.txt
-│   └── Dockerfile      # Konfigurasi container Backend (Python Slim)
-└── docker-compose.yml  # File orkestrasi untuk menghubungkan Client-Server-DB
-
-6. CARA MENJALANKAN (DEPLOYMENT)
--------------------
-Prasyarat: Docker Desktop harus sudah terinstal dan berjalan (Running).
-
-1. Buka Terminal/Command Prompt di root folder proyek.
-2. Jalankan perintah berikut untuk membangun dan menjalankan container:
-   
-   docker compose up --build
-
-3. Tunggu hingga proses build selesai. Akses aplikasi melalui browser:
-   - Frontend UI : http://localhost:5173
-   - Backend Docs: http://localhost:8000/docs (Swagger UI)
-
-Catatan: 
-Database menggunakan Volume (mongo-data), sehingga data tidak akan hilang 
-meskipun container dimatikan atau direstart.
-
-========================================================================
+```text
++--------+           +----------+           +----------+           +---------+
+|  USER  |           | FRONTEND |           | BACKEND  |           | DATABASE|
+| (User) |           | (React)  |           | (FastAPI)|           | (Mongo) |
++--------+           +----------+           +----------+           +---------+
+    |                     |                      |                      |
+    |--- Input Data ----->|                      |                      |
+    |                     |---- POST (JSON) ---->|                      |
+    |                     |                      |--- Validasi Data --->|
+    |                     |                      |                      |
+    |                     |                      |---- Insert Data ---->|
+    |                     |                      |<--- Acknowledge -----|
+    |                     |<----- 200 OK --------|                      |
+    |<-- Update UI -------|                      |                      |
+    |   (Real-time)       |                      |                      |
